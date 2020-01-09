@@ -1,0 +1,41 @@
+---
+- hosts: web
+  become: yes
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+        force_apt_get: yes
+        update_cache: yes
+
+    - name: create html directory
+      file:
+        path: /var/www/html
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: render index.html
+      copy:
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+        content: |
+          hello world
+      notify: reload nginx
+
+    - name: start and enable nginx
+      systemd:
+        name: nginx.service
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+  handlers:
+    - name: reload nginx
+      systemd:
+        name: nginx.service
+        state: reloaded
