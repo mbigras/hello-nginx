@@ -2,40 +2,31 @@
 - hosts: web
   become: yes
   tasks:
-    - name: install nginx
-      apt:
-        name: nginx
-        state: present
-        force_apt_get: yes
-        update_cache: yes
-
-    - name: create html directory
+    - name: create nginx installation directory
       file:
-        path: /var/www/html
+        path: /opt/nginx
         state: directory
         owner: root
         group: root
         mode: 0755
 
-    - name: render index.html
+    - name: create index.html
       copy:
-        dest: /var/www/html/index.html
+        dest: /opt/nginx/index.html
         owner: root
         group: root
         mode: 0644
         content: |
           hello world
-      notify: reload nginx
 
-    - name: start and enable nginx
-      systemd:
-        name: nginx.service
+    - name: start and enable nginx docker container
+      docker_container:
+        name: nginx
+        image: nginx:1.17.7
+        network_mode: host
         state: started
-        enabled: yes
-        daemon_reload: yes
-
-  handlers:
-    - name: reload nginx
-      systemd:
-        name: nginx.service
-        state: reloaded
+        restart_policy: always
+        volumes:
+          - /opt/nginx/index.html:/usr/share/nginx/html/index.html
+        comparisons:
+          '*': strict

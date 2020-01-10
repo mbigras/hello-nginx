@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: install docker
+      apt:
+        name: docker.io
+        state: present
+        force_apt_get: yes
+
+    - name: install pip3
+      apt:
+        name: python3-pip
+        state: present
+        force_apt_get: yes
+
+    - name: upgrade pip
+      pip:
+        name: pip
+        state: present
+
+    - name: install docker python module
+      pip:
+        name: docker
+        state: present
