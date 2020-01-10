@@ -1,3 +1,4 @@
+- import_playbook: etc_hosts.yml
 - import_playbook: apt.yml
 - import_playbook: rsyslog.yml
 - import_playbook: docker.yml
