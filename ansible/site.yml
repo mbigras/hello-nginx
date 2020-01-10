@@ -1,3 +1,4 @@
 - import_playbook: apt.yml
+- import_playbook: rsyslog.yml
 - import_playbook: docker.yml
 - import_playbook: nginx.yml

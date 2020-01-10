@@ -2,6 +2,30 @@
 - hosts: all
   become: yes
   tasks:
+    - name: create docker configuration directory
+      file:
+        path: /etc/docker
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: configure docker to use syslog driver
+      copy:
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: 0644
+        content: !unsafe |
+          {
+            "log-driver": "syslog",
+            "log-opts": {
+                "syslog-address": "udp://127.0.0.1:514",
+                "tag": "docker: {{.ImageName}}/{{.Name}}/{{.ID}}"
+            }
+          }
+      notify: restart docker
+
     - name: install docker
       apt:
         name: docker.io
@@ -23,3 +47,8 @@
       pip:
         name: docker
         state: present
+  handlers:
+    - name: restart docker
+      systemd:
+        name: docker.service
+        state: restarted
