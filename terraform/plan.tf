@@ -2,8 +2,8 @@ variable "domain" {
   type = string
 }
 
-resource "digitalocean_ssh_key" "max" {
-  name = "max key"
+resource "digitalocean_ssh_key" "root" {
+  name = "root key"
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
@@ -13,7 +13,7 @@ resource "digitalocean_droplet" "web1" {
   region = "sfo2"
   size = "512mb"
   ssh_keys = [
-    digitalocean_ssh_key.max.fingerprint,
+    digitalocean_ssh_key.root.fingerprint,
   ]
 }
 
