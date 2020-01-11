@@ -17,7 +17,7 @@
         group: root
         mode: 0644
         content: |
-          hello world
+          hello from {{ inventory_hostname }}
 
     - name: create, start, and enable nginx container
       docker_container:
